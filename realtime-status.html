@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Suivi Commande en Temps Réel</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #d63384;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+
+    ul#updates {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      background-color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 5px solid #ccc;
+      transition: all 0.3s ease;
+    }
+
+    .Reçue       { border-color: #6c757d; }
+    .Confirmée   { border-color: #0d6efd; }
+    .EnPréparation { border-color: #ffc107; }
+    .Prête       { border-color: #20c997; }
+    .Livrée      { border-color: #198754; }
+
+    .emoji {
+      font-size: 1.3em;
+    }
+
+    li:hover {
+      background-color: #f1f3f5;
+      transform: scale(1.01);
+    }
+  </style>
+</head>
+<body>
+  <h2>🛵 Statut de commande en temps réel</h2>
+  <ul id="updates"></ul>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    const socket = io('http://localhost:3002');
+
+    const statusIcons = {
+      "Reçue": "📥",
+      "Confirmée": "✅",
+      "En préparation": "👨‍🍳",
+      "Prête": "📦",
+      "Livrée": "🚚"
+    };
+
+    socket.on('orderStatusUpdate', (data) => {
+      const li = document.createElement('li');
+      const status = data.status;
+      const icon = statusIcons[status] || "📍";
+
+      li.className = status.replace(/ /g, '');
+      li.innerHTML = `<span class="emoji">${icon}</span> Commande <strong>${data.orderId}</strong> → Nouveau statut : <strong>${status}</strong>`;
+      document.getElementById('updates').prepend(li);
+    });
+  </script>
+</body>
+</html>

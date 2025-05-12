@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package commande;
+
+// Définition du message de requête
+message CommandeRequest {
+  string orderId = 1;
+}
+
+// Définition du message de réponse
+message CommandeResponse {
+  string status = 1;
+  string message = 2;
+}
+
+// Service exposé par pharma-service
+service CommandeService {
+  rpc ConfirmerCommande (CommandeRequest) returns (CommandeResponse);
+  rpc RejeterCommande (CommandeRequest) returns (CommandeResponse);
+}
